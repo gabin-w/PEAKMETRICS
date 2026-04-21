@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PeakMetrics — Precision Nutrition for Athletes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f2ec;
+      --lime: #c8f000;
+      --mid: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      color: var(--lime);
+    }
+    .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--white); font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--lime); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+      padding: 7rem 3rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -10%; right: -5%;
+      width: 60vw; height: 90vh;
+      background: radial-gradient(ellipse at center, rgba(200,240,0,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--lime); margin-bottom: 1.2rem;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 8vw, 7.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      margin-bottom: 2rem;
+    }
+    .hero-title span { color: var(--lime); }
+    .hero-desc {
+      font-size: 1.05rem; line-height: 1.75; color: rgba(245,242,236,0.7);
+      max-width: 480px; margin-bottom: 2.5rem;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      background: var(--lime); color: var(--black);
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none;
+      padding: 1rem 2rem; border-radius: 2px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(200,240,0,0.3); }
+    .hero-cta svg { transition: transform 0.2s; }
+    .hero-cta:hover svg { transform: translateX(4px); }
+
+    .hero-right {
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+    }
+    .orbit-visual {
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,240,0,0.15);
+      position: relative;
+      animation: spin 20s linear infinite;
+    }
+    .orbit-visual::before, .orbit-visual::after {
+      content: ''; position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(200,240,0,0.08);
+    }
+    .orbit-visual::before { inset: 40px; animation: spin 14s linear infinite reverse; }
+    .orbit-visual::after  { inset: 80px; border-color: rgba(200,240,0,0.12); }
+    .orbit-dot {
+      position: absolute; width: 10px; height: 10px;
+      background: var(--lime); border-radius: 50%;
+      top: -5px; left: calc(50% - 5px);
+      box-shadow: 0 0 16px var(--lime);
+    }
+    .orbit-inner {
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      animation: spin 20s linear infinite reverse;
+    }
+    .orbit-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; letter-spacing: 0.15em;
+      color: var(--lime); text-align: center; line-height: 1.3;
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .stat-item {
+      padding: 2.5rem 3rem;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem;
+      color: var(--lime); letter-spacing: 0.04em; line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-label { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.5; }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 7rem 3rem; }
+    section + section { padding-top: 0; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--lime); border: 1px solid rgba(200,240,0,0.3);
+      padding: 0.3rem 0.8rem; border-radius: 2px; margin-bottom: 1.5rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      letter-spacing: 0.03em; line-height: 1.0;
+      margin-bottom: 1.5rem;
+    }
+    .section-title span { color: var(--lime); }
+
+    /* ─── PROBLEM / SOLUTION ─── */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;
+    }
+    .card {
+      background: var(--mid);
+      border: 1px solid var(--border);
+      border-radius: 4px; padding: 2.5rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.25s, border-color 0.25s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: rgba(200,240,0,0.25); }
+    .card-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 5rem;
+      color: rgba(200,240,0,0.08); position: absolute; top: 0.5rem; right: 1rem;
+      pointer-events: none; line-height: 1;
+    }
+    .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.06em; margin-bottom: 1rem; }
+    .card-body { font-size: 0.92rem; line-height: 1.8; color: rgba(245,242,236,0.7); }
+
+    /* ─── DIFFERENTIATORS GRID ─── */
+    .diff-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+      border: 1px solid var(--border);
+    }
+    .diff-cell {
+      padding: 2.5rem 2rem;
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .diff-cell:nth-child(3n) { border-right: none; }
+    .diff-cell:hover { background: var(--mid); }
+    .diff-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .diff-cell-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.06em; margin-bottom: 0.6rem; }
+    .diff-cell-body { font-size: 0.85rem; line-height: 1.7; color: rgba(245,242,236,0.6); }
+
+    /* ─── MISSION ─── */
+    .mission-block {
+      background: var(--lime); color: var(--black);
+      border-radius: 4px; padding: 4rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .mission-block::before {
+      content: '"'; font-family: 'Bebas Neue', sans-serif;
+      font-size: 20rem; line-height: 0.8;
+      position: absolute; top: -1rem; left: 2rem;
+      color: rgba(0,0,0,0.06); pointer-events: none;
+    }
+    .mission-quote {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      line-height: 1.2; letter-spacing: 0.02em;
+      max-width: 820px; position: relative; z-index: 1;
+    }
+    .mission-label {
+      margin-top: 1.5rem;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      opacity: 0.6; position: relative; z-index: 1;
+    }
+
+    /* ─── TEAM ─── */
+    .team-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem;
+    }
+    .team-card {
+      background: var(--mid); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2rem 1.5rem; text-align: center;
+      transition: transform 0.25s, border-color 0.25s;
+    }
+    .team-card:hover { transform: translateY(-4px); border-color: rgba(200,240,0,0.3); }
+    .team-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(200,240,0,0.12);
+      border: 1.5px solid rgba(200,240,0,0.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+      color: var(--lime); letter-spacing: 0.05em;
+    }
+    .team-name { font-weight: 500; font-size: 0.88rem; margin-bottom: 0.3rem; }
+    .team-role { font-size: 0.75rem; opacity: 0.5; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ─── FINANCIALS ─── */
+    .fin-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
+    }
+    .fin-card {
+      background: var(--mid); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2.5rem;
+    }
+    .fin-label {
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--lime); margin-bottom: 0.8rem;
+    }
+    .fin-value {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3rem;
+      letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .fin-desc { font-size: 0.88rem; line-height: 1.7; color: rgba(245,242,236,0.6); }
+
+    /* ─── INVESTMENT CTA ─── */
+    .invest-block {
+      background: var(--mid); border: 1px solid var(--border);
+      border-radius: 4px; padding: 5rem 4rem;
+      display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: center;
+    }
+    .invest-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      letter-spacing: 0.03em; line-height: 1.05;
+    }
+    .invest-title span { color: var(--lime); }
+    .invest-desc { margin-top: 1rem; font-size: 0.92rem; line-height: 1.75; opacity: 0.65; max-width: 560px; }
+    .invest-btn {
+      flex-shrink: 0;
+      display: inline-block;
+      border: 1.5px solid var(--lime); color: var(--lime);
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none;
+      padding: 1.1rem 2.4rem; border-radius: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .invest-btn:hover { background: var(--lime); color: var(--black); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; color: var(--lime); }
+    .footer-text { font-size: 0.75rem; opacity: 0.35; letter-spacing: 0.08em; }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
+      .hero-right { display: none; }
+      .stats-bar { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+      section { padding: 4rem 1.5rem; }
+      .two-col, .diff-grid, .team-grid, .fin-grid { grid-template-columns: 1fr; }
+      .diff-cell { border-right: none; border-bottom: 1px solid var(--border); }
+      .invest-block { grid-template-columns: 1fr; }
+      .mission-block { padding: 3rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">PeakMetrics</div>
+  <ul class="nav-links">
+    <li><a href="#market">Market</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#financials">Financials</a></li>
+    <li><a href="#invest">Invest</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Business Plan — 2026</p>
+    <h1 class="hero-title">PEAK<br><span>METRICS</span></h1>
+    <p class="hero-desc">Biologically personalized sports nutrition, powered by real-time biomarker data and wearable tech. No guesswork. No risk. Just your formula.</p>
+    <a href="#market" class="hero-cta">
+      Discover the Opportunity
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-right">
+    <div class="orbit-visual">
+      <div class="orbit-dot"></div>
+      <div class="orbit-inner">
+        <div class="orbit-badge">BIO<br>SYNC<br>NUTRITION</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar fade-up">
+  <div class="stat-item">
+    <div class="stat-number">$61B</div>
+    <div class="stat-label">Sports Nutrition Market</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">90%</div>
+    <div class="stat-label">Athletes using wrong supplements</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">65%</div>
+    <div class="stat-label">Target Gross Margin</div>
+  </div>
+</div>
+
+<!-- MARKET -->
+<section id="market">
+  <div class="fade-up">
+    <span class="section-tag">Industry & Market</span>
+    <h2 class="section-title">THE DATA-DRIVEN<br><span>WELLNESS REVOLUTION</span></h2>
+  </div>
+  <div class="two-col fade-up" style="margin-top: 3rem;">
+    <div class="card">
+      <div class="card-num">01</div>
+      <h3 class="card-title">Market Context</h3>
+      <p class="card-body">PeakMetrics operates at the intersection of the sports nutrition ($61 billion) and HealthTech markets. In 2026, the dominant trend is <strong style="color:var(--lime)">"Data-Driven Wellness"</strong> — consumers demand solutions grounded in biological evidence, not generic formulas. The proliferation of connected wearables (watches, rings) creates a unique window for real-time adaptive nutrition.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">02</div>
+      <h3 class="card-title">The Unique Opportunity</h3>
+      <p class="card-body">The problem is the <strong style="color:var(--lime)">"blind supplement"</strong> — 90% of amateur athletes consume supplements that are mismatched to their biology, leading to ineffectiveness or dangerous overdose. Fear of contamination with banned substances further holds back serious athletes. PeakMetrics eliminates guesswork with biologically validated, anti-doping certified formulas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section style="padding-top: 0;">
+  <div class="mission-block fade-up">
+    <p class="mission-quote">Enabling every athlete to reach their full potential through precision, biologically personalized and scalable nutrition, rooted in scientific rigor and full transparency.</p>
+    <p class="mission-label">— PeakMetrics Mission Statement</p>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="fade-up">
+    <span class="section-tag">Key Differentiators</span>
+    <h2 class="section-title">WHY WE <span>WIN</span></h2>
+  </div>
+  <div class="diff-grid fade-up" style="margin-top: 3rem;">
+    <div class="diff-cell">
+      <div class="diff-icon">🧬</div>
+      <div class="diff-cell-title">Biomarker Intelligence</div>
+      <div class="diff-cell-body">Formulas coded according to blood and urine biomarkers — not a questionnaire. Your biology defines your nutrition.</div>
+    </div>
+    <div class="diff-cell">
+      <div class="diff-icon">⌚</div>
+      <div class="diff-cell-title">Real-Time Wearable Sync</div>
+      <div class="diff-cell-body">Deep API integration with smartwatches adapts your supplement stack to live effort and recovery metrics.</div>
+    </div>
+    <div class="diff-cell">
+      <div class="diff-icon">✅</div>
+      <div class="diff-cell-title">Anti-Doping Certified</div>
+      <div class="diff-cell-body">Informed Sport certification eliminates the contamination risk that has held serious athletes back from supplementing.</div>
+    </div>
+    <div class="diff-cell">
+      <div class="diff-icon">🔄</div>
+      <div class="diff-cell-title">Phygital Model</div>
+      <div class="diff-cell-body">Physical lab tests combined with app-driven tech creates a retention moat well above the industry average.</div>
+    </div>
+    <div class="diff-cell">
+      <div class="diff-icon">🔒</div>
+      <div class="diff-cell-title">HDS-Compliant Data</div>
+      <div class="diff-cell-body">Health Data Hosting compliant architecture ensures full GDPR and health regulation compliance from day one.</div>
+    </div>
+    <div class="diff-cell">
+      <div class="diff-icon">🚀</div>
+      <div class="diff-cell-title">Lean Startup Iteration</div>
+      <div class="diff-cell-body">Formulas continuously adjusted against user feedback and new clinical studies — a living product, not a static shelf SKU.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="fade-up">
+    <span class="section-tag">Management Team</span>
+    <h2 class="section-title">THE PEOPLE<br><span>BEHIND THE FORMULA</span></h2>
+    <p style="max-width: 600px; opacity: 0.6; font-size: 0.95rem; line-height: 1.75; margin-top: 1rem;">Our team combines scientific expertise and operational agility — uniting nutrition science, algorithm engineering, and supply chain management under one mission.</p>
+  </div>
+  <div class="team-grid fade-up" style="margin-top: 3rem;">
+    <div class="team-card">
+      <div class="team-avatar">BB</div>
+      <div class="team-name">Barnabé Blanchard</div>
+      <div class="team-role">Co-Founder</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">VLD</div>
+      <div class="team-name">Victor Le Dall</div>
+      <div class="team-role">Co-Founder</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">GP</div>
+      <div class="team-name">Grégoire Palthey</div>
+      <div class="team-role">Co-Founder</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">LB</div>
+      <div class="team-name">Lisa Boisneault</div>
+      <div class="team-role">Co-Founder</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">GW</div>
+      <div class="team-name">Gabin Wegscheider</div>
+      <div class="team-role">Co-Founder</div>
+    </div>
+  </div>
+  <div class="two-col fade-up" style="margin-top: 2rem;">
+    <div class="card">
+      <h3 class="card-title">Scientific & Medical</h3>
+      <p class="card-body">A dedicated nutrition and medical manager oversees all formula validation — ensuring every product is grounded in clinical evidence and meets the highest safety standards.</p>
+    </div>
+    <div class="card">
+      <h3 class="card-title">Technology & Operations</h3>
+      <p class="card-body">A CTO leads development of the personalization algorithm and wearable API. An operations manager owns the supply chain and certified laboratory partnerships.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINANCIALS -->
+<section id="financials">
+  <div class="fade-up">
+    <span class="section-tag">Financial Potential</span>
+    <h2 class="section-title">RISK, REWARD<br>&amp; <span>RETURNS</span></h2>
+  </div>
+  <div class="fin-grid fade-up" style="margin-top: 3rem;">
+    <div class="fin-card">
+      <div class="fin-label">Revenue Model</div>
+      <div class="fin-value">Recurring</div>
+      <div class="fin-desc">A high-margin recurring subscription model targets 65% gross margin post-insourcing, with a high customer lifetime value (LTV) driven by deep biological personalization and switching costs.</div>
+    </div>
+    <div class="fin-card">
+      <div class="fin-label">Break-Even Target</div>
+      <div class="fin-value">Year 2</div>
+      <div class="fin-desc">Break-even point expected from the second year of operations, supported by rapid customer acquisition through the Phygital model and certified lab partnerships reducing marginal costs.</div>
+    </div>
+    <div class="fin-card">
+      <div class="fin-label">Primary Risk</div>
+      <div class="fin-value">Mitigated</div>
+      <div class="fin-desc">Logistical costs of biological testing and strict health data regulation are mitigated through certified laboratory partnerships and HDS-compliant architecture designed from day one.</div>
+    </div>
+    <div class="fin-card">
+      <div class="fin-label">Market Position</div>
+      <div class="fin-value">First-Mover</div>
+      <div class="fin-desc">While mass brands and questionnaire-based subscriptions (e.g. Cuure) dominate today, the real-time biomarker segment is nascent — PeakMetrics enters with a defensible technological advantage.</div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTMENT CTA -->
+<section id="invest" style="padding-bottom: 7rem;">
+  <div class="invest-block fade-up">
+    <div>
+      <h2 class="invest-title">WE'RE RAISING<br><span>€500,000</span></h2>
+      <p class="invest-desc">This capital will finance the internalization of production (micro-dosing), the obtaining of anti-doping labels (Informed Sport) and the development of the API interface with wearables. Invest early in a highly scalable sector at the intersection of biotech and sports performance.</p>
+    </div>
+    <a href="mailto:contact@peakmetrics.io" class="invest-btn">Get in Touch →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PeakMetrics</div>
+  <div class="footer-text">© 2026 PeakMetrics. All rights reserved. Business Plan — Harvard ManageMentor BIB1.</div>
+</footer>
+
+<script>
+  // Fade-up on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
